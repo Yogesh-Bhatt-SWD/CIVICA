@@ -1,0 +1,17 @@
+# ── Core AI / Model ─────────────────────────────────────────────────────
+ultralytics>=8.0.0          # YOLOv8 framework (includes torch, torchvision)
+torch>=2.0.0                # PyTorch backend
+torchvision>=0.15.0         # Vision utilities for PyTorch
+
+# ── Image Processing ─────────────────────────────────────────────────────
+opencv-python>=4.8.0        # Read/write/annotate images (detect.py)
+Pillow>=10.0.0              # PIL image support (app.py Flask service)
+
+# ── Flask API Service (app.py) ───────────────────────────────────────────
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.31.0
+
+# ── Utilities ────────────────────────────────────────────────────────────
+numpy>=1.24.0
+python-dotenv>=1.0.0

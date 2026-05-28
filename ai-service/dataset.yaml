@@ -1,0 +1,15 @@
+# Civica YOLO Dataset Configuration
+# Classes match the dataset folder structure
+
+path: D:/CIVICA/Dataset/dataset/dataset
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 4  # Number of classes
+
+names:
+  0: FallenTrees
+  1: DamagedElectricalPoles
+  2: Potholes and RoadCracks
+  3: Garbage
