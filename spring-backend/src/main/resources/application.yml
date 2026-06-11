@@ -1,0 +1,46 @@
+server:
+  port: 5000
+  servlet:
+    context-path: ""
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/civica
+      auto-index-creation: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+# JWT Configuration
+jwt:
+  secret: civica_super_secret_jwt_key_2024
+  expiration: 604800000  # 7 days in milliseconds
+
+# AI Service
+ai:
+  service:
+    url: http://127.0.0.1:5001
+
+# File upload
+file:
+  upload-dir: ./uploads
+
+# Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+logging:
+  level:
+    com.civica: INFO
+    org.springframework.security: WARN

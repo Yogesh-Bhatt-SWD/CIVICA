@@ -11,9 +11,9 @@ start "Civica-MongoDB" cmd /k "mongod --dbpath D:\CIVICA\data"
 timeout /t 3 /nobreak > nul
 
 :: 2. Backend
-echo [2/4] Launching Node.js Backend...
-cd /d D:\CIVICA\backend
-start "Civica-Backend" cmd /k "npm run dev"
+echo [2/4] Launching Spring Boot Backend...
+cd /d D:\CIVICA\spring-backend
+start "Civica-Backend" cmd /k "mvn spring-boot:run"
 timeout /t 3 /nobreak > nul
 
 :: 3. AI Service

@@ -1,4 +1,4 @@
-# Node.js
+# ── Node.js ──────────────────────────────────
 **/node_modules/
 **/.env
 **/.env.local
@@ -9,7 +9,10 @@
 **/yarn-debug.log*
 **/yarn-error.log*
 
-# Python
+# ── Old Node.js Backend (removed — replaced by Spring Boot) ──
+/backend/
+
+# ── Python ───────────────────────────────────
 **/__pycache__/
 **/*.py[cod]
 **/*$py.class
@@ -20,32 +23,45 @@
 **/.pytest_cache
 **/.ipynb_checkpoints
 
-# MongoDB Data
+# ── Spring Boot / Java ───────────────────────
+**/target/
+**/*.class
+**/*.jar
+**/*.war
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+**/spring-backend/uploads/
+**/spring-backend/backend_log.txt
+
+# ── MongoDB Data ─────────────────────────────
 /data/
 
-# OS/System files
+# ── OS/System files ──────────────────────────
 .DS_Store
 Thumbs.db
 *.tmp
 *.temp
 
-# Build/Dist
+# ── Build/Dist ───────────────────────────────
 **/dist/
 **/build/
 .parcel-cache
 .cache
 
-# Logs
+# ── Logs ─────────────────────────────────────
 *.log
 /mongo_log.txt
 
-# Large files - Dataset & Model Weights
+# ── Large files - Dataset & Model Weights ────
 /Dataset/
 *.pt
 
-# AI service runtime outputs & cached models
+# ── AI service runtime outputs ───────────────
 /ai-service/outputs/
 /ai-service/models/
 
-# Backend uploads
-/backend/uploads/
+# ── IDE ──────────────────────────────────────
+.idea/
+*.iml
+.vscode/

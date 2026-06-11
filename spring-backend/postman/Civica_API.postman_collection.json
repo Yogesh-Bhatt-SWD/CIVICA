@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "CIVICA API — Spring Boot",
+    "description": "Complete API collection for the CIVICA Civic Infrastructure Management Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000" },
+    { "key": "jwt_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Citizen",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Citizen\",\n  \"email\": \"test@civica.dev\",\n  \"password\": \"password123\",\n  \"role\": \"citizen\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"citizen@civica.dev\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["var json = pm.response.json();\nif (json.data && json.data.token) {\n  pm.collectionVariables.set('jwt_token', json.data.token);\n}"]
+            }
+          }]
+        },
+        {
+          "name": "Get Me",
+          "request": { "method": "GET", "url": "{{base_url}}/api/auth/me" }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Get All Reports",
+          "request": { "method": "GET", "url": "{{base_url}}/api/reports?page=1&limit=10" }
+        },
+        {
+          "name": "Get My Reports",
+          "request": { "method": "GET", "url": "{{base_url}}/api/reports/my?page=1&limit=8" }
+        },
+        {
+          "name": "Get Categories",
+          "request": { "method": "GET", "url": "{{base_url}}/api/reports/categories" }
+        },
+        {
+          "name": "Create Report",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/reports",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "Test Pothole Report", "type": "text" },
+                { "key": "description", "value": "Large pothole on main road", "type": "text" },
+                { "key": "category", "value": "Potholes and RoadCracks", "type": "text" },
+                { "key": "latitude", "value": "19.0760", "type": "text" },
+                { "key": "longitude", "value": "72.8777", "type": "text" },
+                { "key": "address", "value": "Test Road", "type": "text" },
+                { "key": "state", "value": "Maharashtra", "type": "text" },
+                { "key": "severity", "value": "4", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upvote Report",
+          "request": { "method": "PATCH", "url": "{{base_url}}/api/reports/{{report_id}}/upvote" }
+        },
+        {
+          "name": "Delete Report",
+          "request": { "method": "DELETE", "url": "{{base_url}}/api/reports/{{report_id}}" }
+        },
+        {
+          "name": "Download Report PDF",
+          "request": { "method": "GET", "url": "{{base_url}}/api/reports/{{report_id}}/pdf" }
+        }
+      ]
+    },
+    {
+      "name": "Authority",
+      "item": [
+        {
+          "name": "Get Active Reports",
+          "request": { "method": "GET", "url": "{{base_url}}/api/authority/reports?page=1&limit=12" }
+        },
+        {
+          "name": "Update Report Status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/authority/reports/{{report_id}}/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"note\": \"Crew dispatched\",\n  \"estimatedDays\": 3\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Analytics",
+          "request": { "method": "GET", "url": "{{base_url}}/api/admin/analytics" }
+        },
+        {
+          "name": "Get Users",
+          "request": { "method": "GET", "url": "{{base_url}}/api/admin/users?page=1&limit=15" }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/admin/users/{{user_id}}/role",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"authority\"\n}" }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": { "method": "DELETE", "url": "{{base_url}}/api/admin/users/{{user_id}}" }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": { "method": "GET", "url": "{{base_url}}/health" }
+        }
+      ]
+    }
+  ]
+}
