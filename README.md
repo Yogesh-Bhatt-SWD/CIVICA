@@ -1,158 +1,274 @@
 # CIVICA — AI-Powered Urban Civic Issue Detection
 
-An intelligent civic issue reporting and management platform that uses **YOLOv8** computer vision to automatically detect urban infrastructure problems from uploaded images.
+## Problem
 
-## Features
+Urban areas regularly face civic infrastructure problems such as **potholes, road cracks, fallen trees, damaged electrical poles, and garbage dumping**.
 
-- **AI-Powered Detection** — Automatically identifies Potholes, Road Cracks, Fallen Trees, Damaged Electrical Poles, and Garbage from images using a custom-trained YOLOv8 model
-- **Citizen Reporting** — Users can upload images, select categories, and submit reports with geolocation
-- **Authority Dashboard** — Assigned authorities can update issue status and manage resolutions
-- **Admin Dashboard** — Full platform management with user roles, analytics, and report oversight
-- **Real-time Status Tracking** — Track issue resolution progress from reported → in progress → resolved
-- **Interactive Map** — Leaflet-based map visualization of geo-tagged reported issues
-- **PDF Reports** — Automated report generation with QR codes using Apache PDFBox
-- **Gravity Scoring** — AI-driven priority scoring system based on severity, upvotes, and age
+Today, reporting these problems can be difficult for citizens because they may not know:
+
+* Where or how to report the issue.
+* Which authority is responsible for resolving it.
+* Whether the issue has already been reported.
+* What is happening after submitting a complaint.
+
+For authorities, managing these reports can also be challenging because large numbers of complaints need to be **verified, prioritized, assigned, and tracked**. Manually reviewing uploaded images and deciding which issues require immediate attention can make the process slower.
+
+## Solution
+
+**CIVICA** provides a centralized platform where citizens can report urban civic problems using **images and location data**, while authorities can manage and track those issues through their resolution.
+
+The platform uses a custom-trained **YOLOv8 computer vision model trained on 10,000+ images** to automatically analyze uploaded images and detect supported civic issues.
+
+Instead of simply storing a complaint, CIVICA helps turn a citizen's report into an actionable issue:
+
+```text
+Citizen Reports Problem
+        ↓
+Uploads Image + Location
+        ↓
+YOLOv8 Analyzes Image
+        ↓
+Civic Issue Detected
+        ↓
+Category + Severity + Priority
+        ↓
+Report Created
+        ↓
+Authority Manages Issue
+        ↓
+Reported → In Progress → Resolved
+        ↓
+Citizen Tracks Resolution
+```
+
+## What Civic Problems Does CIVICA Handle?
+
+CIVICA focuses on common urban infrastructure and public-area problems:
+
+| Civic Issue                  | What it represents                                      |
+| ---------------------------- | ------------------------------------------------------- |
+| **Potholes**                 | Damaged road surfaces that can create safety problems   |
+| **Road Cracks**              | Cracks and visible deterioration of roads               |
+| **Fallen Trees**             | Trees blocking roads or public spaces                   |
+| **Damaged Electrical Poles** | Broken, fallen, or leaning electrical poles             |
+| **Garbage**                  | Garbage accumulation or illegal dumping in public areas |
+
+## AI-Powered Issue Detection
+
+The main intelligent component of CIVICA is its **YOLOv8 object detection model**.
+
+The model was custom-trained using **10,000+ images** representing the supported civic issue categories.
+
+When a citizen uploads an image, the AI service analyzes it and identifies the detected issue.
+
+```text
+Uploaded Image
+      ↓
+YOLOv8 Model
+      ↓
+Object Detection
+      ↓
+Issue Category
+      ↓
+Detection Confidence
+```
+
+This reduces the amount of manual image inspection required during issue reporting and management.
+
+## Citizen Features
+
+Citizens can:
+
+* Register and securely log in.
+* Report civic problems using images.
+* Provide the issue's geographical location.
+* Track their submitted reports.
+* View issue status and resolution progress.
+* Upvote existing reported issues.
+* View reported issues on an interactive map.
+* Generate/download PDF reports for issues.
+
+## Authority Features
+
+Authorities can:
+
+* View issues assigned to them.
+* Manage reports within their assigned area.
+* Review reported issues and their details.
+* Update issue status.
+* Record resolution information.
+* Track issues from reporting to resolution.
+
+## Admin Features
+
+Admins can:
+
+* Manage users and roles.
+* Oversee reported civic issues.
+* Access platform-level analytics.
+* Manage the overall issue-management system.
+
+## Issue Prioritization
+
+Not every civic issue has the same urgency.
+
+CIVICA uses a **gravity/priority scoring system** based on factors such as:
+
+* Issue severity
+* Number of community upvotes
+* Age of the report
+
+This helps authorities identify issues that may require greater priority.
+
+## Interactive Map
+
+Geo-tagged reports are displayed using an interactive **Leaflet map**, allowing users and authorities to see where civic problems are occurring and identify areas with multiple reported issues.
+
+## Issue Lifecycle
+
+Each report can move through a defined resolution workflow:
+
+```text
+Reported
+   ↓
+In Progress
+   ↓
+Resolved
+```
+
+This gives citizens visibility into what happens after they submit a report and gives authorities a structured way to manage the resolution process.
+
+## Architecture
+
+CIVICA consists of a React frontend, Spring Boot backend, and a separate Python AI service:
+
+```text
+                    React Frontend
+                          │
+                          ▼
+                 Spring Boot Backend
+                    │           │
+                    ▼           ▼
+                 MongoDB     AI Service
+                                 │
+                                 ▼
+                            YOLOv8 Model
+```
+
+The Spring Boot backend handles authentication, authorization, report management, business logic, prioritization, geolocation data, PDF generation, and communication with the AI service.
+
+The Python Flask service is responsible for image processing and YOLOv8 inference.
+
+## Authentication & Roles
+
+CIVICA uses **JWT-based authentication with Spring Security** and supports three primary roles:
+
+```text
+Citizen
+  → Report & Track Issues
+
+Authority
+  → Manage Assigned Issues
+
+Admin
+  → Manage Platform
+```
+
+Role-based authorization ensures that each role can access only its permitted functionality.
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 19 + Vite 8, React Router v7, Recharts, Leaflet, Vanilla CSS |
-| Backend | Java 17, Spring Boot 3.3, Spring Security, Spring Data MongoDB |
-| AI Service | Python + Flask, YOLOv8 (Ultralytics), PIL/Pillow |
-| Database | MongoDB (NoSQL) |
-| Auth | JWT-based authentication (jjwt) with Spring Security |
-| PDF/QR | Apache PDFBox, ZXing |
+| Layer      | Technology                                        |
+| ---------- | ------------------------------------------------- |
+| Frontend   | React 19, Vite 8, React Router, Recharts, Leaflet |
+| Backend    | Java 17, Spring Boot 3.3                          |
+| Security   | Spring Security, JWT                              |
+| Database   | MongoDB, Spring Data MongoDB                      |
+| AI Service | Python, Flask, YOLOv8, Ultralytics, Pillow        |
+| PDF / QR   | Apache PDFBox, ZXing                              |
+| Styling    | Vanilla CSS                                       |
 
 ## Project Structure
 
-```
+```text
 CIVICA/
-├── frontend/           # React 19 + Vite frontend (SPA)
-├── spring-backend/     # Spring Boot 3.3 REST API
-├── ai-service/         # Python Flask AI detection service
-├── start_civica.bat    # One-click launcher (all services)
+├── frontend/           # React frontend
+├── spring-backend/     # Spring Boot backend
+├── ai-service/         # Python Flask + YOLOv8 service
+├── start_civica.bat    # One-click launcher
 └── DATABASE.md         # MongoDB setup guide
 ```
 
 ## Prerequisites
 
-- **Java** 17+
-- **Maven** 3.8+
-- **Node.js** v18+
-- **Python** 3.9+
-- **MongoDB** (local instance)
-- **YOLOv8 Model Weights** — `best.pt` (place in `ai-service/`)
+* Java 17+
+* Maven 3.8+
+* Node.js 18+
+* Python 3.9+
+* MongoDB
+* YOLOv8 model weights (`best.pt`)
 
 ## Setup
 
-### 1. Clone the repo
+### Clone the Repository
+
 ```bash
 git clone https://github.com/Yogesh-Bhatt-SWD/CIVICA.git
 cd CIVICA
 ```
 
-### 2. Install dependencies
+### Install Dependencies
 
-**Frontend:**
+Frontend:
+
 ```bash
 cd frontend
 npm install
 ```
 
-**Backend (Spring Boot):**
-> No manual install needed — Maven downloads dependencies automatically on first run.
+AI Service:
 
-**AI Service:**
 ```bash
 cd ai-service
 pip install -r requirements.txt
 ```
 
-### 3. Configure
+Maven dependencies are installed automatically when the Spring Boot application is built.
 
-Backend configuration is in `spring-backend/src/main/resources/application.yml`:
-```yaml
-server:
-  port: 5000
+### Add YOLOv8 Model
 
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/civica
+Place the trained model weights at:
 
-jwt:
-  secret: civica_super_secret_jwt_key_2024
-  expiration: 604800000  # 7 days
-
-ai:
-  service:
-    url: http://127.0.0.1:5001
+```text
+ai-service/best.pt
 ```
 
-### 4. Add model weights
+### Run the Application
 
-Place your trained `best.pt` model file in the `ai-service/` directory.
+On Windows:
 
-### 5. Run all services
-
-**Option A — One-click (Windows):**
 ```bash
 start_civica.bat
 ```
 
-**Option B — Manual:**
+Or run the services individually:
+
 ```bash
-# Terminal 1: MongoDB
-mongod --dbpath ./data
+# Backend
+cd spring-backend
+mvn spring-boot:run
 
-# Terminal 2: Spring Boot Backend
-cd spring-backend && mvn spring-boot:run
+# AI Service
+cd ai-service
+python app.py
 
-# Terminal 3: AI Service
-cd ai-service && python app.py
-
-# Terminal 4: Frontend
-cd frontend && npm run dev
+# Frontend
+cd frontend
+npm run dev
 ```
 
-### 6. Access the app
+## Project Highlights
 
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:5000 |
-| Swagger UI | http://localhost:5000/swagger-ui.html |
-| AI Service | http://localhost:5001 |
+CIVICA connects **citizen reporting, AI-based image detection, geolocation, issue prioritization, authority management, and resolution tracking** into a single civic issue management platform.
 
-## API Endpoints (25 total)
-
-| Controller | Endpoints | Description |
-|-----------|-----------|-------------|
-| Auth | 3 | Register, Login, Get current user |
-| Reports | 10 | CRUD, image validation, PDF, upvote, categories |
-| Admin | 4 | User management, role updates, analytics |
-| Authority | 3 | View assigned reports, update status, resolutions |
-| Health | 1 | Health check |
-| AI Service | 3 | Image validation, URL validation, health |
-
-## Detection Categories
-
-| Category | Description |
-|----------|-------------|
-| Potholes & Road Cracks | Road surface damage |
-| Fallen Trees | Fallen or uprooted trees on roads |
-| Damaged Electrical Poles | Damaged or leaning poles |
-| Garbage | Illegal dumping and waste |
-
-## User Roles
-
-| Role | Access |
-|------|--------|
-| **Citizen** | Submit reports, track status, upvote issues |
-| **Authority** | Manage assigned area reports, update resolutions |
-| **Admin** | Full platform control, user management, analytics |
-
-## License
-
-This project is for educational purposes.
+**The goal is simple: make it easier to report civic problems, easier for authorities to prioritize and manage them, and easier for citizens to track their resolution.**
