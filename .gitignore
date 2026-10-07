@@ -9,8 +9,8 @@
 **/yarn-debug.log*
 **/yarn-error.log*
 
-# ── Old Node.js Backend (removed — replaced by Spring Boot) ──
-/backend/
+# ── Node.js Backend Uploads ──
+/backend/uploads/
 
 # ── Python ───────────────────────────────────
 **/__pycache__/
