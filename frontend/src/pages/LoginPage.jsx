@@ -34,7 +34,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/oauth2/authorization/google';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '') : 'http://localhost:5000');
+    window.location.href = `${backendUrl}/oauth2/authorization/google`;
   };
 
   return (

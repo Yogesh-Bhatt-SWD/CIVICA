@@ -38,6 +38,11 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '') : 'http://localhost:5000');
+    window.location.href = `${backendUrl}/oauth2/authorization/google`;
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -230,7 +235,7 @@ export default function RegisterPage() {
           <button
             id="google-register-btn"
             type="button"
-            onClick={() => { window.location.href = 'http://localhost:5000/oauth2/authorization/google'; }}
+            onClick={handleGoogleLogin}
             style={{
               width: '100%',
               padding: '12px',
