@@ -3,14 +3,15 @@ package com.civica.repository;
 import com.civica.model.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ReportRepository extends MongoRepository<Report, String> {
+public interface ReportRepository extends JpaRepository<Report, String> {
 
     Page<Report> findBySubmittedBy(String userId, Pageable pageable);
 
@@ -34,9 +35,33 @@ public interface ReportRepository extends MongoRepository<Report, String> {
 
     long countByStatus(String status);
 
-    @Query("{ 'location': { $near: { $geometry: { type: 'Point', coordinates: [?0, ?1] }, $maxDistance: ?2 } }, 'category': ?3, 'status': { $ne: 'resolved' } }")
-    List<Report> findNearbyDuplicates(double lng, double lat, double maxDistanceMetres, String category);
+    @Query(value = "SELECT * FROM reports r WHERE r.category = :category AND r.status != 'resolved' AND r.latitude IS NOT NULL AND r.longitude IS NOT NULL AND (6371000 * acos(LEAST(1.0, GREATEST(-1.0, cos(radians(:lat)) * cos(radians(r.latitude)) * cos(radians(r.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(r.latitude)))))) <= :maxDistanceMetres", nativeQuery = true)
+    List<Report> findNearbyDuplicates(@Param("lng") double lng, @Param("lat") double lat, @Param("maxDistanceMetres") double maxDistanceMetres, @Param("category") String category);
 
-    @Query("{ 'address': { $ne: '' } }")
+    @Query("SELECT r FROM Report r WHERE r.address IS NOT NULL AND r.address != ''")
     List<Report> findAllWithAddress();
+
+    @Query("SELECT r.category AS category, COUNT(r) AS count FROM Report r GROUP BY r.category")
+    List<CategoryCountProjection> countReportsByCategory();
+
+    @Query("SELECT r.status AS status, COUNT(r) AS count FROM Report r GROUP BY r.status")
+    List<StatusCountProjection> countReportsByStatus();
+
+    @Query("SELECT r.address AS address, COUNT(r) AS count FROM Report r WHERE r.address IS NOT NULL AND r.address != '' GROUP BY r.address ORDER BY COUNT(r) DESC")
+    List<AreaCountProjection> findTopReportedAreas(Pageable pageable);
+
+    interface CategoryCountProjection {
+        String getCategory();
+        Long getCount();
+    }
+
+    interface StatusCountProjection {
+        String getStatus();
+        Long getCount();
+    }
+
+    interface AreaCountProjection {
+        String getAddress();
+        Long getCount();
+    }
 }

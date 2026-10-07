@@ -93,4 +93,46 @@ public class AuthService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
+
+    public AuthResponse processGoogleAuth(String email, String name, String picture, String sub) {
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Email is required for Google authentication.");
+        }
+
+        String normalizedEmail = email.toLowerCase().trim();
+        User user = userRepository.findByEmail(normalizedEmail).map(existing -> {
+            boolean updated = false;
+            if (existing.getProviderId() == null && sub != null) {
+                existing.setProviderId(sub);
+                existing.setProvider("google");
+                updated = true;
+            }
+            if ((existing.getAvatar() == null || existing.getAvatar().isBlank()) && picture != null) {
+                existing.setAvatar(picture);
+                updated = true;
+            }
+            return updated ? userRepository.save(existing) : existing;
+        }).orElseGet(() -> {
+            User newUser = User.builder()
+                    .name(name != null && !name.isBlank() ? name.trim() : normalizedEmail.split("@")[0])
+                    .email(normalizedEmail)
+                    .role("citizen")
+                    .provider("google")
+                    .providerId(sub)
+                    .avatar(picture != null ? picture : "")
+                    .build();
+            return userRepository.save(newUser);
+        });
+
+        String token = jwtTokenProvider.generateToken(user.getId(), user.getRole(), user.getName(), user.getEmail());
+        return AuthResponse.builder()
+                .token(token)
+                .user(AuthResponse.UserInfo.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .role(user.getRole())
+                        .build())
+                .build();
+    }
 }

@@ -48,6 +48,21 @@ public class AuthController {
                 .build());
     }
 
+    @PostMapping("/google")
+    @Operation(summary = "Authenticate with Google OAuth")
+    public ResponseEntity<ApiResponse<AuthResponse>> googleAuth(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String name = request.get("name");
+        String avatar = request.get("avatar");
+        String sub = request.get("sub");
+        AuthResponse data = authService.processGoogleAuth(email, name, avatar, sub);
+        return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
+                .success(true)
+                .message("Google authentication successful.")
+                .data(data)
+                .build());
+    }
+
     @GetMapping("/me")
     @Operation(summary = "Get current authenticated user")
     @SuppressWarnings("unchecked")

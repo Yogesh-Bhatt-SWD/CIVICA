@@ -210,6 +210,55 @@ export default function RegisterPage() {
             </button>
           </form>
 
+          {/* OAuth Divider */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            margin: '22px 0 18px 0',
+            gap: 12,
+            color: 'var(--text-muted, #71717a)',
+            fontSize: '0.78rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+            <span>or continue with</span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+          </div>
+
+          {/* Google Button */}
+          <button
+            id="google-register-btn"
+            type="button"
+            onClick={() => { window.location.href = 'http://localhost:5000/oauth2/authorization/google'; }}
+            style={{
+              width: '100%',
+              padding: '12px',
+              fontSize: '0.92rem',
+              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 10,
+              borderRadius: 10,
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: 'var(--text-primary, #fff)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.87c2.26-2.09 3.67-5.17 3.67-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.87-3.05c-1.08.72-2.45 1.16-4.06 1.16-3.13 0-5.78-2.11-6.73-4.96H1.28v3.15C3.26 21.26 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.5-.39-2.24s.14-1.52.39-2.24V6.61H1.28C.46 8.23 0 10.06 0 12s.46 3.77 1.28 5.39l3.99-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.74 1.28 6.61l3.99 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/>
+            </svg>
+            Sign up with Google
+          </button>
+
           <div style={{ textAlign: 'center', marginTop: 20, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
             <Link to="/login" style={{ color: 'var(--accent)', fontWeight: 600 }}>Sign in</Link>

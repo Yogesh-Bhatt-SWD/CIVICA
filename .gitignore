@@ -33,6 +33,8 @@
 **/mvnw.cmd
 **/spring-backend/uploads/
 **/spring-backend/backend_log.txt
+**/application-local.yml
+**/*-local.yml
 
 # ── MongoDB Data ─────────────────────────────
 /data/

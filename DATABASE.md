@@ -1,27 +1,26 @@
-# MongoDB Service Management
+# MySQL Database Management
 
-If the MongoDB service stops or fails to connect, follow these steps to restart it.
+CIVICA uses **MySQL** as its relational database.
 
-## 1. Start the MongoDB Service
-Open a new terminal (Windows PowerShell or Command Prompt) and run the following command:
+## 1. Database Credentials & Configuration
 
-```powershell
-mongod --dbpath D:\CIVICA\data
-```
+* **Host**: `localhost`
+* **Port**: `3306`
+* **Database Name**: `Civica`
+* **Username**: `root`
+* **Password**: `root123`
+* **Connection URL**: `jdbc:mysql://localhost:3306/Civica?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC`
 
-> [!IMPORTANT]
-> **Keep this terminal window open** while you are developing. If you close it, the database will shut down and the login/register functionality will stop working.
+## 2. Automatic Table Creation
 
-## 2. Troubleshooting
-- **Error: Address already in use**: This means MongoDB is already running. You can check this by running:
-  `tasklist /fi "imagename eq mongod.exe"`
-- **Permission Denied**: Run the terminal as **Administrator**.
-- **Data directory not found**: Ensure the path `D:\CIVICA\data` is correct and accessible.
+Spring Boot uses Hibernate with `ddl-auto: update`, which automatically creates and updates all required tables (`users`, `reports`, `resolutions`, `report_upvotes`, `report_bounding_boxes`) upon backend startup.
 
-## 3. Automation (Optional)
-You can create a `start_db.bat` file in the root directory for one-click startup:
-```batch
-@echo off
-mongod --dbpath D:\CIVICA\data
-pause
-```
+## 3. Pre-Seeded Default Accounts
+
+On first run with an empty database, [DataSeeder.java](spring-backend/src/main/java/com/civica/util/DataSeeder.java) automatically inserts:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Citizen | `citizen@civica.dev` | `password123` |
+| Authority | `authority@civica.dev` | `password123` |
+| Admin | `admin@civica.dev` | `password123` |

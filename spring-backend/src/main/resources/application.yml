@@ -4,10 +4,32 @@ server:
     context-path: ""
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/civica
-      auto-index-creation: true
+  config:
+    import:
+      - optional:classpath:application-local.yml
+  datasource:
+    url: jdbc:mysql://localhost:3306/Civica?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
   servlet:
     multipart:
       enabled: true
@@ -17,6 +39,11 @@ spring:
     default-property-inclusion: non_null
     serialization:
       write-dates-as-timestamps: false
+
+# OAuth2 Frontend Redirect
+app:
+  oauth2:
+    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:5173/oauth-success}
 
 # JWT Configuration
 jwt:

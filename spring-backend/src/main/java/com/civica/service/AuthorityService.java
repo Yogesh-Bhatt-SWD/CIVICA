@@ -9,12 +9,10 @@ import com.civica.repository.ReportRepository;
 import com.civica.repository.ResolutionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,34 +26,36 @@ public class AuthorityService {
     private final ResolutionRepository resolutionRepository;
     private final GravityScoreService gravityScoreService;
     private final ReportService reportService;
-    private final MongoTemplate mongoTemplate;
 
     public Map<String, Object> getActiveReports(String category, String status, int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.DESC, "gravityScore"));
-        Query query = new Query();
+        Page<Report> reportPage;
 
+        List<String> statuses;
         if (status != null && !status.isBlank() && List.of("pending", "in_progress").contains(status)) {
-            query.addCriteria(Criteria.where("status").is(status));
+            statuses = List.of(status);
         } else {
-            query.addCriteria(Criteria.where("status").in("pending", "in_progress"));
+            statuses = List.of("pending", "in_progress");
         }
 
         if (category != null && !category.isBlank()) {
-            query.addCriteria(Criteria.where("category").is(category));
+            reportPage = reportRepository.findByStatusInAndCategory(statuses, category, pageable);
+        } else {
+            reportPage = reportRepository.findByStatusIn(statuses, pageable);
         }
 
-        long total = mongoTemplate.count(query, Report.class);
-        query.with(pageable);
-        List<Report> reports = mongoTemplate.find(query, Report.class);
-
-        List<Map<String, Object>> populated = reports.stream().map(reportService::toResponseMap).toList();
-        int totalPages = (int) Math.ceil((double) total / limit);
+        List<Map<String, Object>> populated = reportPage.getContent().stream()
+                .map(reportService::toResponseMap).toList();
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", populated);
         result.put("pagination", PaginationMeta.builder()
-                .total(total).page(page).pages(totalPages)
-                .hasNext(page < totalPages).hasPrev(page > 1).build());
+                .total(reportPage.getTotalElements())
+                .page(page)
+                .pages(reportPage.getTotalPages())
+                .hasNext(reportPage.hasNext())
+                .hasPrev(reportPage.hasPrevious())
+                .build());
         return result;
     }
 

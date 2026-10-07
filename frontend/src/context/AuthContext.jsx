@@ -39,6 +39,16 @@ export function AuthProvider({ children }) {
     return u;
   };
 
+  const loginWithToken = async (t) => {
+    localStorage.setItem('civica_token', t);
+    setToken(t);
+    const res = await api.get('/auth/me');
+    const u = res.data.data;
+    setUser(u);
+    localStorage.setItem('civica_user', JSON.stringify(u));
+    return u;
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -47,7 +57,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, loginWithToken, logout }}>
       {children}
     </AuthContext.Provider>
   );

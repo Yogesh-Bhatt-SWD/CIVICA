@@ -15,9 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -34,7 +31,6 @@ public class AdminService {
     private final ResolutionRepository resolutionRepository;
     private final GravityScoreService gravityScoreService;
     private final ReportService reportService;
-    private final MongoTemplate mongoTemplate;
 
     public Map<String, Object> getUsers(String role, int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -98,45 +94,27 @@ public class AdminService {
         long pendingCount = reportRepository.countByStatus("pending");
         long inProgressCount = reportRepository.countByStatus("in_progress");
 
-        // Reports by category aggregation
-        Aggregation catAgg = Aggregation.newAggregation(
-                Aggregation.group("category").count().as("count"),
-                Aggregation.project("count").and("_id").as("category")
-        );
-        List<Map> catResults = mongoTemplate.aggregate(catAgg, "reports", Map.class).getMappedResults();
-        List<Map<String, Object>> reportsByCategory = catResults.stream().map(m -> {
+        // Reports by category
+        List<Map<String, Object>> reportsByCategory = reportRepository.countReportsByCategory().stream().map(m -> {
             Map<String, Object> r = new LinkedHashMap<>();
-            r.put("category", m.get("category"));
-            r.put("count", m.get("count"));
+            r.put("category", m.getCategory());
+            r.put("count", m.getCount());
             return r;
         }).toList();
 
-        // Reports by status aggregation
-        Aggregation statusAgg = Aggregation.newAggregation(
-                Aggregation.group("status").count().as("count"),
-                Aggregation.project("count").and("_id").as("status")
-        );
-        List<Map> statusResults = mongoTemplate.aggregate(statusAgg, "reports", Map.class).getMappedResults();
-        List<Map<String, Object>> reportsByStatus = statusResults.stream().map(m -> {
+        // Reports by status
+        List<Map<String, Object>> reportsByStatus = reportRepository.countReportsByStatus().stream().map(m -> {
             Map<String, Object> r = new LinkedHashMap<>();
-            r.put("status", m.get("status"));
-            r.put("count", m.get("count"));
+            r.put("status", m.getStatus());
+            r.put("count", m.getCount());
             return r;
         }).toList();
 
         // Top reported areas
-        Aggregation areaAgg = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("address").ne("")),
-                Aggregation.group("address").count().as("count"),
-                Aggregation.project("count").and("_id").as("address"),
-                Aggregation.sort(Sort.Direction.DESC, "count"),
-                Aggregation.limit(5)
-        );
-        List<Map> areaResults = mongoTemplate.aggregate(areaAgg, "reports", Map.class).getMappedResults();
-        List<Map<String, Object>> topReportedAreas = areaResults.stream().map(m -> {
+        List<Map<String, Object>> topReportedAreas = reportRepository.findTopReportedAreas(PageRequest.of(0, 5)).stream().map(m -> {
             Map<String, Object> r = new LinkedHashMap<>();
-            r.put("address", m.get("address"));
-            r.put("count", m.get("count"));
+            r.put("address", m.getAddress());
+            r.put("count", m.getCount());
             return r;
         }).toList();
 

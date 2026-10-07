@@ -178,35 +178,34 @@ Role-based authorization ensures that each role can access only its permitted fu
 
 ## Tech Stack
 
-| Layer      | Technology                                        |
-| ---------- | ------------------------------------------------- |
-| Frontend   | React 19, Vite 8, React Router, Recharts, Leaflet |
-| Backend    | Java 17, Spring Boot 3.3                          |
-| Security   | Spring Security, JWT                              |
-| Database   | MongoDB, Spring Data MongoDB                      |
-| AI Service | Python, Flask, YOLOv8, Ultralytics, Pillow        |
-| PDF / QR   | Apache PDFBox, ZXing                              |
-| Styling    | Vanilla CSS                                       |
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 19 + Vite 8, React Router v7, Recharts, Leaflet, Vanilla CSS |
+| Backend | Java 17, Spring Boot 3.3, Spring Security, Spring Data JPA (Hibernate) |
+| Database | MySQL (Relational) |
+| Auth | JWT & Google OAuth 2.0 with Spring Security |
+| AI Service | Python + Flask, YOLOv8 (Ultralytics), PIL/Pillow |
+| PDF/QR | Apache PDFBox, ZXing |
 
 ## Project Structure
 
 ```text
 CIVICA/
-├── frontend/           # React frontend
-├── spring-backend/     # Spring Boot backend
-├── ai-service/         # Python Flask + YOLOv8 service
-├── start_civica.bat    # One-click launcher
-└── DATABASE.md         # MongoDB setup guide
+├── frontend/           # React 19 + Vite frontend (SPA)
+├── spring-backend/     # Spring Boot 3.3 REST API (MySQL)
+├── ai-service/         # Python Flask AI detection service
+├── start_civica.bat    # One-click launcher (all services)
+└── DATABASE.md         # MySQL setup guide
 ```
 
 ## Prerequisites
 
-* Java 17+
-* Maven 3.8+
-* Node.js 18+
-* Python 3.9+
-* MongoDB
-* YOLOv8 model weights (`best.pt`)
+- **Java** 17+
+- **Maven** 3.8+
+- **Node.js** v18+
+- **Python** 3.9+
+- **MySQL** (local instance on port 3306)
+- **YOLOv8 Model Weights** — `best.pt` (place in `ai-service/`)
 
 ## Setup
 

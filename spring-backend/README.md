@@ -4,17 +4,15 @@ AI-Powered Civic Infrastructure Management Platform — Java Spring Boot Backend
 
 ## Prerequisites
 
-- **Java 21** (JDK)
-- **Maven 3.9+**
-- **MongoDB** running on `localhost:27017`
+- **Java 17+** (JDK)
+- **Maven 3.8+**
+- **MySQL** running on `localhost:3306` (database `Civica`)
 - **Python AI Service** (optional, for AI image validation) on port `5001`
 
 ## Quick Start
 
-### 1. Start MongoDB
-```powershell
-mongod --dbpath D:\CIVICA\data
-```
+### 1. Ensure MySQL is running
+Ensure your local MySQL server is running on port 3306 with the `Civica` database created.
 
 ### 2. Start the Spring Boot Backend
 ```powershell
@@ -57,10 +55,10 @@ On first startup (empty database), the seeder creates:
 
 | Component | Technology |
 |-----------|------------|
-| Language | Java 21 |
+| Language | Java 17+ |
 | Framework | Spring Boot 3.3 |
 | Security | Spring Security + JWT |
-| Database | MongoDB |
+| Database | MySQL (Spring Data JPA / Hibernate) |
 | Build | Maven |
 | API Docs | SpringDoc OpenAPI (Swagger) |
 | PDF | Apache PDFBox |
