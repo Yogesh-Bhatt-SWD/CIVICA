@@ -13,10 +13,11 @@ import java.util.Map;
 @Tag(name = "Health", description = "Health check")
 public class HealthController {
 
-    @GetMapping("/health")
+    @GetMapping({"/health", "/actuator/health"})
     @Operation(summary = "Health check endpoint")
     public ResponseEntity<Map<String, Object>> health() {
         return ResponseEntity.ok(Map.of(
+                "status", "UP",
                 "success", true,
                 "message", "Civica API is running",
                 "timestamp", Instant.now().toString()

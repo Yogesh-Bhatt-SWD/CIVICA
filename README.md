@@ -266,6 +266,24 @@ cd frontend
 npm run dev
 ```
 
+## Production Deployment
+ 
+### Frontend (Vercel)
+- **Root Directory**: `frontend`
+- **Framework Preset**: `Vite`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variables**:
+  - `VITE_API_URL` = `https://<YOUR-BACKEND-DOMAIN>/api`
+  - `VITE_BACKEND_URL` = `https://<YOUR-BACKEND-DOMAIN>`
+
+### Backend (Render / Cloud PaaS)
+- **Root Directory**: `spring-backend`
+- **Build Command**: `./mvnw clean package -DskipTests`
+- **Start Command**: `java -jar target/civica-backend-1.0.0.jar`
+- **Health Check Path**: `/health` or `/actuator/health`
+- See [spring-backend/README.md](spring-backend/README.md) for full list of required environment variables (`SPRING_DATASOURCE_URL`, `FRONTEND_URL`, `JWT_SECRET`, etc.).
+
 ## Project Highlights
 
 CIVICA connects **citizen reporting, AI-based image detection, geolocation, issue prioritization, authority management, and resolution tracking** into a single civic issue management platform.

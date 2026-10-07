@@ -1,5 +1,6 @@
 server:
-  port: 5000
+  port: ${PORT:5000}
+  forward-headers-strategy: framework
   servlet:
     context-path: ""
 
@@ -8,9 +9,9 @@ spring:
     import:
       - optional:classpath:application-local.yml
   datasource:
-    url: jdbc:mysql://localhost:3306/Civica?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: root123
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:mysql://localhost:3306/Civica?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DATABASE_USERNAME:root}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:root123}}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -40,24 +41,27 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
-# OAuth2 Frontend Redirect
+# App & CORS Configuration
 app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
   oauth2:
-    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:5173/oauth-success}
+    redirect-uri: ${OAUTH2_REDIRECT_URI:${FRONTEND_URL:http://localhost:5173}/oauth-success}
 
 # JWT Configuration
 jwt:
-  secret: civica_super_secret_jwt_key_2024
-  expiration: 604800000  # 7 days in milliseconds
+  secret: ${JWT_SECRET:civica_super_secret_jwt_key_2024}
+  expiration: ${JWT_EXPIRATION:604800000}  # 7 days in milliseconds
 
 # AI Service
 ai:
   service:
-    url: http://127.0.0.1:5001
+    url: ${AI_SERVICE_URL:http://127.0.0.1:5001}
 
 # File upload
 file:
-  upload-dir: ./uploads
+  upload-dir: ${FILE_UPLOAD_DIR:./uploads}
 
 # Swagger
 springdoc:

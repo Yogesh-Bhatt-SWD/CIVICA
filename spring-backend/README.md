@@ -137,4 +137,56 @@ src/main/java/com/civica/
 - `PATCH /api/admin/reports/:id/status` — Update report status
 
 ### Health
-- `GET /health` — Health check
+- `GET /health` — Health check endpoint (returns `{"status": "UP", ...}`)
+- `GET /actuator/health` — Actuator compatible health check alias
+
+---
+
+## Production Deployment Guide (Render)
+
+### 1. Create a Web Service on Render
+- **Source Code**: Connect your GitHub repository (`CIVICA`).
+- **Language / Environment**: `Java` (or Docker)
+- **Root Directory**: `spring-backend`
+- **Build Command**:
+  ```bash
+  ./mvnw clean package -DskipTests
+  ```
+- **Start Command**:
+  ```bash
+  java -jar target/civica-backend-1.0.0.jar
+  ```
+- **Health Check Path**: `/health` (or `/actuator/health`)
+
+### 2. Environment Variables to Configure in Render
+
+| Variable | Description | Example / Default |
+|---|---|---|
+| `SPRING_DATASOURCE_URL` | MySQL JDBC URL with SSL enabled | `jdbc:mysql://<host>:<port>/<db>?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC` |
+| `SPRING_DATASOURCE_USERNAME` | MySQL database username | `root` |
+| `SPRING_DATASOURCE_PASSWORD` | MySQL database password | `your_db_password` |
+| `FRONTEND_URL` | Deployed Vercel frontend URL | `https://your-civica-frontend.vercel.app` |
+| `CORS_ALLOWED_ORIGINS` | Additional allowed origins (optional) | `https://*.vercel.app` |
+| `JWT_SECRET` | Strong secret for signing tokens | `min_32_characters_random_secure_key` |
+| `JWT_EXPIRATION` | Token validity in ms (optional) | `604800000` (7 days) |
+| `GOOGLE_CLIENT_ID` | Google OAuth 2.0 Client ID | `xxxx.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth 2.0 Client Secret | `GOCSPX-xxxx` |
+| `OAUTH2_REDIRECT_URI` | OAuth callback target (optional) | Defaults to `${FRONTEND_URL}/oauth-success` |
+| `AI_SERVICE_URL` | Deployed Flask AI service URL (optional)| `https://your-ai-service.onrender.com` |
+| `FILE_UPLOAD_DIR` | Image uploads storage directory | `./uploads` |
+
+*(Note: Render automatically sets the `PORT` variable, and Spring Boot is configured to read it via `${PORT:5000}`)*
+
+### 3. Configure Google OAuth 2.0 for Production
+In [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+1. **Authorized JavaScript origins**:
+   - `https://your-civica-frontend.vercel.app`
+2. **Authorized redirect URIs**:
+   - `https://<YOUR-RENDER-BACKEND-DOMAIN>/login/oauth2/code/google`
+
+### 4. Connect Deployed Backend to Vercel Frontend
+In your **Vercel Project Dashboard** -> **Settings** -> **Environment Variables**:
+- `VITE_API_URL` = `https://<YOUR-RENDER-BACKEND-DOMAIN>/api`
+- `VITE_BACKEND_URL` = `https://<YOUR-RENDER-BACKEND-DOMAIN>`
+
+Redeploy the frontend in Vercel to apply the updated environment variables.
